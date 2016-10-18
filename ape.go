@@ -15,10 +15,11 @@ type Server struct {
 }
 
 //New Create a new Ape Server
-func New() (s *Server) {
+func New() *Server {
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	s := &Server{}
 	s.Router = httprouter.New()
-	return
+	return s
 }
 
 //RunHTTP put the http server to run, the function don't return
