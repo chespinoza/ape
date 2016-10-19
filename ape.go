@@ -1,6 +1,7 @@
 package ape
 
 import (
+	"log"
 	"net/http"
 	"runtime"
 	"time"
@@ -22,19 +23,21 @@ func New() *Server {
 	return s
 }
 
-//RunHTTP put the http server to run, the function don't return
-//if return is only in case of error
-func (s *Server) RunHTTP(addr string, readTimeout, writeTimeout int) error {
+//RunHTTP startthe http server
+//addr is the TCP address to listen on.
+//readTimeout is the max duration before timing out read of the request in secs
+//writeTimeout is the max duration before timing out write of the response in secs
+func (s *Server) RunHTTP(addr string, readTimeout, writeTimeout int) {
 	handler := context.ClearHandler(s.Router)
 	server := &http.Server{
 		Addr:         addr,
-		ReadTimeout:  time.Duration(readTimeout),
-		WriteTimeout: time.Duration(writeTimeout),
+		ReadTimeout:  time.Duration(readTimeout) * time.Second,
+		WriteTimeout: time.Duration(writeTimeout) * time.Second,
 		Handler:      handler,
 	}
 	err := server.ListenAndServe()
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	return nil
+
 }
